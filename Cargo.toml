@@ -1,0 +1,53 @@
+[package]
+name = "ex-man"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+authors = ["Stefan Hacks <stefan@hacks.ai>"]
+description = "An intelligent manpage example generator - smarter than tldr. Parses local manpages, extracts flags/options, and generates contextual usage examples."
+license = "MIT"
+repository = "https://github.com/stefan-hacks/ex-man"
+keywords = ["manpage", "cli", "help", "examples", "documentation"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+# CLI argument parsing
+clap = { version = "4.5", features = ["derive", "cargo"] }
+
+# Database
+rusqlite = { version = "0.31", features = ["bundled", "chrono"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Pattern matching
+regex = "1.10"
+
+# Terminal colors
+colored = "2.1"
+
+# Directory paths (XDG)
+dirs = "5.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Directory walking
+walkdir = "2.5"
+
+# Process spawning
+which = "6.0"
+
+# HTTP client (for future AI integration)
+reqwest = { version = "0.12", features = ["blocking", "json"], optional = true }
+
+[features]
+default = []
+ai = ["reqwest"]
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
