@@ -15,7 +15,26 @@ An intelligent manpage example generator. Smarter than tldr/tealdeer - parses lo
 - **🐧 Cross-Platform**: Works on all Linux distributions and NixOS environments
 - **📦 Zero Config**: Works out of the box with your existing manpages
 
-## Installation
+## Quick Start
+
+### With Nix (recommended - no install needed)
+
+```bash
+# Run directly from GitHub (compiles once, caches forever)
+nix run github:stefan-hacks/ex-man -- ls
+
+# Force re-parse of the manpage
+nix run github:stefan-hacks/ex-man -- ls --refresh
+
+# Show raw options
+nix run github:stefan-hacks/ex-man -- ls --raw
+
+# If you previously tried to run before the flake existed, force a re-fetch:
+nix run github:stefan-hacks/ex-man --refresh -- ls
+
+# Install permanently
+nix profile install github:stefan-hacks/ex-man
+```
 
 ### From source (requires Rust 1.70+)
 
@@ -24,23 +43,6 @@ git clone https://github.com/stefan-hacks/ex-man.git
 cd ex-man
 cargo build --release
 sudo cp target/release/ex-man /usr/local/bin/
-```
-
-### With Nix (flakes enabled)
-
-```bash
-# Run directly without installing (downloads + compiles once, caches forever)
-nix run github:stefan-hacks/ex-man -- ls
-
-# Or install permanently into your profile
-nix profile install github:stefan-hacks/ex-man
-
-# Build locally from a cloned repo
-nix build .  # produces ./result/bin/ex-man
-nix run . -- ls --refresh
-
-# Enter dev shell
-nix develop   # has rustc, cargo, clippy, rustfmt
 ```
 
 ### NixOS (flake)
@@ -61,15 +63,23 @@ inputs.ex-man.packages.${system}.default
 ```bash
 # Show examples for a command (first run parses manpage, subsequent runs use cache)
 ex-man ls
+# Or with nix run:
+nix run github:stefan-hacks/ex-man -- ls
 
 # Force re-parse (ignore cache)
 ex-man ls --refresh
+# Or:
+nix run github:stefan-hacks/ex-man -- ls --refresh
 
 # Show raw extracted options without examples
 ex-man ls --raw
+# Or:
+nix run github:stefan-hacks/ex-man -- ls --raw
 
 # Output as JSON
 ex-man ls --json
+# Or:
+nix run github:stefan-hacks/ex-man -- ls --json
 
 # Search for tools in database
 ex-man -s grep
