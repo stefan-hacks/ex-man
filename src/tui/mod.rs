@@ -306,15 +306,24 @@ fn run_app<B: ratatui::backend::Backend>(
         if crossterm::event::poll(timeout)? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
+                    // Search mode: almost ALL keys go to search input.
+                    // Only Enter confirms, Esc cancels.
+                    if app.search_mode {
+                        match key.code {
+                            KeyCode::Enter => app.toggle_search(),
+                            KeyCode::Esc => app.toggle_search(),
+                            KeyCode::Backspace => app.backspace_search(),
+                            KeyCode::Delete => app.clear_search(),
+                            KeyCode::Char(c) => app.append_search_char(c),
+                            _ => {}
+                        }
+                        continue;
+                    }
+
+                    // Normal mode (not searching)
                     match key.code {
                         // Quit
-                        KeyCode::Char('q') | KeyCode::Esc => {
-                            if app.search_mode {
-                                app.toggle_search();
-                            } else {
-                                return Ok(());
-                            }
-                        }
+                        KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
 
                         // Navigation
                         KeyCode::Down | KeyCode::Char('j') => app.next_item(),
@@ -332,13 +341,8 @@ fn run_app<B: ratatui::backend::Backend>(
                             }
                         }
 
-                        // Search
+                        // Search toggle
                         KeyCode::Char('/') => app.toggle_search(),
-                        KeyCode::Enter => {
-                            if app.search_mode {
-                                app.toggle_search();
-                            }
-                        }
 
                         // Sort
                         KeyCode::Char('s') => app.toggle_sort(),
@@ -352,23 +356,6 @@ fn run_app<B: ratatui::backend::Backend>(
                         }
                         KeyCode::Left | KeyCode::Char('h') => {
                             app.scroll_detail = app.scroll_detail.saturating_sub(1);
-                        }
-
-                        // Search input
-                        KeyCode::Char(c) => {
-                            if app.search_mode {
-                                app.append_search_char(c);
-                            }
-                        }
-                        KeyCode::Backspace => {
-                            if app.search_mode {
-                                app.backspace_search();
-                            }
-                        }
-                        KeyCode::Delete => {
-                            if app.search_mode {
-                                app.clear_search();
-                            }
                         }
 
                         _ => {}
