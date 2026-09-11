@@ -26,6 +26,23 @@ cargo build --release
 sudo cp target/release/ex-man /usr/local/bin/
 ```
 
+### With Nix (flakes enabled)
+
+```bash
+# Run directly without installing (downloads + compiles once, caches forever)
+nix run github:stefan-hacks/ex-man -- ls
+
+# Or install permanently into your profile
+nix profile install github:stefan-hacks/ex-man
+
+# Build locally from a cloned repo
+nix build .  # produces ./result/bin/ex-man
+nix run . -- ls --refresh
+
+# Enter dev shell
+nix develop   # has rustc, cargo, clippy, rustfmt
+```
+
 ### NixOS (flake)
 
 ```nix
