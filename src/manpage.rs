@@ -21,6 +21,18 @@ pub struct ManOption {
     pub section: String,
 }
 
+impl ManOption {
+    /// Format the flag as a display string like "-a, --all"
+    pub fn display_string(&self) -> String {
+        match (&self.short, &self.long) {
+            (Some(s), Some(l)) => format!("{}, {}", s, l),
+            (Some(s), None) => s.clone(),
+            (None, Some(l)) => l.clone(),
+            (None, None) => "???".to_string(),
+        }
+    }
+}
+
 /// Manpage parser that extracts options and flags from rendered manpages
 pub struct ManpageParser;
 

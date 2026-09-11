@@ -6,6 +6,7 @@ mod db;
 mod display;
 mod example;
 mod manpage;
+mod tui;
 
 use db::Database;
 use display::DisplayEngine;
@@ -37,6 +38,10 @@ struct Cli {
     /// Output as JSON
     #[arg(long)]
     json: bool,
+
+    /// Force plain text output instead of TUI
+    #[arg(long)]
+    text: bool,
 
     /// Search for a command by partial name
     #[arg(short, long)]
@@ -119,8 +124,17 @@ fn run(cli: Cli) -> anyhow::Result<()> {
     let example_engine = ExampleEngine::new();
     let examples = example_engine.generate_examples(tool_name, &options)?;
 
-    let display = DisplayEngine::new();
-    display.show_examples(tool_name, &examples, &options, cli.json)?;
+    // Use TUI unless --text is specified or stdout is not a tty
+    let use_tui = !cli.text && atty::is(atty::Stream::Stdout);
+
+    if use_tui {
+        // Clear the "Parsing..." / "Loading..." lines
+        print!("\x1B[2K\x1B[1A\x1B[2K\r");
+        tui::run_tui(tool_name, options, examples)?;
+    } else {
+        let display = DisplayEngine::new();
+        display.show_examples(tool_name, &examples, &options, cli.json)?;
+    }
 
     Ok(())
 }

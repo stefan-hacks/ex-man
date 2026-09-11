@@ -14,7 +14,7 @@
         # ex-man derivation - builds from local source
         ex-man = pkgs.rustPlatform.buildRustPackage {
           pname = "ex-man";
-          version = "0.1.0";
+          version = "0.2.0";
 
           src = ./.;
 

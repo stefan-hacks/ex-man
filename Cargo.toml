@@ -1,6 +1,6 @@
 [package]
 name = "ex-man"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 rust-version = "1.70"
 authors = ["Stefan Hacks <stefan@hacks.ai>"]
@@ -24,7 +24,7 @@ thiserror = "1.0"
 # Pattern matching
 regex = "1.10"
 
-# Terminal colors
+# Terminal colors (for non-TUI mode)
 colored = "2.1"
 
 # Directory paths (XDG)
@@ -39,6 +39,22 @@ walkdir = "2.5"
 
 # Process spawning
 which = "6.0"
+
+# TUI framework
+ratatui = "0.28"
+crossterm = "0.28"
+
+# Fuzzy matching for TUI search
+fuzzy-matcher = "0.3"
+
+# Clipboard support
+arboard = "3.4"
+
+# Text wrapping for TUI
+textwrap = "0.16"
+
+# TTY detection
+atty = "0.2"
 
 # HTTP client (for future AI integration)
 reqwest = { version = "0.12", features = ["blocking", "json"], optional = true }
